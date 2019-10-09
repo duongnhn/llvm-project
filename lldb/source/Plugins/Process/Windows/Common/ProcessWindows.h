@@ -13,7 +13,7 @@
 #include "lldb/Utility/Status.h"
 #include "lldb/lldb-forward.h"
 
-#include "Plugins/DynamicLoader/Windows-DYLD/DynamicLoaderWindowsDYLD.h"
+// #include "Plugins/DynamicLoader/Windows-DYLD/DynamicLoaderWindowsDYLD.h"
 #include "ProcessDebugger.h"
 
 namespace lldb_private {
@@ -84,7 +84,7 @@ public:
 
   lldb::addr_t GetImageInfoAddress() override;
 
-  DynamicLoaderWindowsDYLD *GetDynamicLoader() override;
+  // DynamicLoaderWindowsDYLD *GetDynamicLoader() override;
 
   // IDebugDelegate overrides.
   void OnExitProcess(uint32_t exit_code) override;

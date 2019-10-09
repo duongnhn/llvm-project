@@ -70,7 +70,7 @@
 #include "lldb/Utility/Timer.h"
 
 #include "GDBRemoteRegisterContext.h"
-#include "Plugins/Platform/MacOSX/PlatformRemoteiOS.h"
+// #include "Plugins/Platform/MacOSX/PlatformRemoteiOS.h"
 #include "Plugins/Process/Utility/GDBRemoteSignals.h"
 #include "Plugins/Process/Utility/InferiorCallPOSIX.h"
 #include "Plugins/Process/Utility/StopInfoMachException.h"
@@ -2486,8 +2486,10 @@ Status ProcessGDBRemote::DoDestroy() {
     PlatformSP platform_sp = GetTarget().GetPlatform();
 
     // FIXME: These should be ConstStrings so we aren't doing strcmp'ing.
+    ConstString g_name("remote-ios");
     if (platform_sp && platform_sp->GetName() &&
-        platform_sp->GetName() == PlatformRemoteiOS::GetPluginNameStatic()) {
+        // platform_sp->GetName() == PlatformRemoteiOS::GetPluginNameStatic()) {
+        platform_sp->GetName() == g_name) {
       if (m_destroy_tried_resuming) {
         if (log)
           log->PutCString("ProcessGDBRemote::DoDestroy() - Tried resuming to "

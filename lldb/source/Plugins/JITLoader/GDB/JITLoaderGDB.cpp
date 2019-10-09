@@ -7,7 +7,7 @@
 //===----------------------------------------------------------------------===//
 
 #include "JITLoaderGDB.h"
-#include "Plugins/ObjectFile/Mach-O/ObjectFileMachO.h"
+// #include "Plugins/ObjectFile/Mach-O/ObjectFileMachO.h"
 #include "lldb/Breakpoint/Breakpoint.h"
 #include "lldb/Core/Module.h"
 #include "lldb/Core/ModuleSpec.h"

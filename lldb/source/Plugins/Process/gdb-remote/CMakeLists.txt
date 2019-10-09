@@ -12,7 +12,7 @@ endif()
 
 set(LLDB_PLUGINS
   lldbPluginProcessUtility
-  lldbPluginPlatformMacOSX
+  # lldbPluginPlatformMacOSX
 )
 
 if(HAVE_LIBCOMPRESSION)

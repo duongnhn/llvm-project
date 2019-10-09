@@ -56,7 +56,7 @@ add_lldb_library(lldbSymbol
     lldbUtility
     lldbPluginExpressionParserClang
     lldbPluginSymbolFileDWARF
-    lldbPluginSymbolFilePDB
+    # lldbPluginSymbolFilePDB
     lldbPluginObjCLanguage
     lldbPluginObjCRuntime
 

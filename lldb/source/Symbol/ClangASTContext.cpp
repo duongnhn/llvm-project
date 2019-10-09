@@ -95,7 +95,7 @@
 
 #include "Plugins/LanguageRuntime/ObjC/ObjCLanguageRuntime.h"
 #include "Plugins/SymbolFile/DWARF/DWARFASTParserClang.h"
-#include "Plugins/SymbolFile/PDB/PDBASTParser.h"
+// #include "Plugins/SymbolFile/PDB/PDBASTParser.h"
 
 #include <stdio.h>
 
@@ -9893,11 +9893,11 @@ DWARFASTParser *ClangASTContext::GetDWARFParser() {
   return m_dwarf_ast_parser_up.get();
 }
 
-PDBASTParser *ClangASTContext::GetPDBParser() {
-  if (!m_pdb_ast_parser_up)
-    m_pdb_ast_parser_up.reset(new PDBASTParser(*this));
-  return m_pdb_ast_parser_up.get();
-}
+// PDBASTParser *ClangASTContext::GetPDBParser() {
+//   if (!m_pdb_ast_parser_up)
+//     m_pdb_ast_parser_up.reset(new PDBASTParser(*this));
+//   return m_pdb_ast_parser_up.get();
+// }
 
 bool ClangASTContext::LayoutRecordType(
     void *baton, const clang::RecordDecl *record_decl, uint64_t &bit_size,
@@ -9911,8 +9911,8 @@ bool ClangASTContext::LayoutRecordType(
   lldb_private::ClangASTImporter *importer = nullptr;
   if (ast->m_dwarf_ast_parser_up)
     importer = &ast->m_dwarf_ast_parser_up->GetClangASTImporter();
-  if (!importer && ast->m_pdb_ast_parser_up)
-    importer = &ast->m_pdb_ast_parser_up->GetClangASTImporter();
+  // if (!importer && ast->m_pdb_ast_parser_up)
+  //   importer = &ast->m_pdb_ast_parser_up->GetClangASTImporter();
   if (!importer)
     return false;
 

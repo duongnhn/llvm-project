@@ -34,7 +34,7 @@
 #include "lldb/lldb-enumerations.h"
 
 class DWARFASTParserClang;
-class PDBASTParser;
+// class PDBASTParser;
 
 namespace lldb_private {
 
@@ -280,7 +280,7 @@ public:
 
     llvm::SmallVector<const char *, 2> names;
     llvm::SmallVector<clang::TemplateArgument, 2> args;
-    
+
     const char * pack_name = nullptr;
     std::unique_ptr<TemplateParameterInfos> packed_args;
   };
@@ -434,7 +434,7 @@ public:
 
   // TypeSystem methods
   DWARFASTParser *GetDWARFParser() override;
-  PDBASTParser *GetPDBParser() override;
+  // PDBASTParser *GetPDBParser() override;
 
   // ClangASTContext callbacks for external source lookups.
   static void CompleteTagDecl(void *baton, clang::TagDecl *);
@@ -969,7 +969,7 @@ public:
 
   clang::DeclarationName
   GetDeclarationName(const char *name, const CompilerType &function_clang_type);
-  
+
   virtual const clang::ExternalASTMerger::OriginMap &GetOriginMap() {
     return m_origins;
   }
@@ -992,7 +992,7 @@ protected:
     std::unique_ptr<clang::SelectorTable>           m_selector_table_up;
     std::unique_ptr<clang::Builtin::Context>        m_builtins_up;
     std::unique_ptr<DWARFASTParserClang>            m_dwarf_ast_parser_up;
-    std::unique_ptr<PDBASTParser>                   m_pdb_ast_parser_up;
+    // std::unique_ptr<PDBASTParser>                   m_pdb_ast_parser_up;
     std::unique_ptr<ClangASTSource>                 m_scratch_ast_source_up;
     std::unique_ptr<clang::MangleContext>           m_mangle_ctx_up;
     CompleteTagDeclCallback                         m_callback_tag_decl;
@@ -1034,9 +1034,9 @@ public:
                                       const char *name) override;
 
   PersistentExpressionState *GetPersistentExpressionState() override;
-  
+
   clang::ExternalASTMerger &GetMergerUnchecked();
-  
+
   const clang::ExternalASTMerger::OriginMap &GetOriginMap() override {
     return GetMergerUnchecked().GetOrigins();
   }
