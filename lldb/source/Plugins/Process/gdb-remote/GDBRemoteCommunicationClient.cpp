@@ -610,9 +610,9 @@ bool GDBRemoteCommunicationClient::GetLoadedDynamicLibrariesInfosSupported() {
   if (m_supports_jLoadedDynamicLibrariesInfos == eLazyBoolCalculate) {
     StringExtractorGDBRemote response;
     m_supports_jLoadedDynamicLibrariesInfos = eLazyBoolNo;
-    if (SendPacketAndWaitForResponse("jGetLoadedDynamicLibrariesInfos:",
-                                     response,
-                                     false) == PacketResult::Success) {
+    if (SendPacketAndWaitForResponse(
+            "jGetLoadedDynamicLibrariesInfos:", response, false) ==
+        PacketResult::Success) {
       if (response.IsOKResponse()) {
         m_supports_jLoadedDynamicLibrariesInfos = eLazyBoolYes;
       }
@@ -1124,8 +1124,8 @@ bool GDBRemoteCommunicationClient::GetHostInfo(bool force) {
   Log *log(ProcessGDBRemoteLog::GetLogIfAnyCategoryIsSet(GDBR_LOG_PROCESS));
 
   if (force || m_qHostInfo_is_valid == eLazyBoolCalculate) {
-    // host info computation can require DNS traffic and shelling out to external processes.
-    // Increase the timeout to account for that.
+    // host info computation can require DNS traffic and shelling out to
+    // external processes. Increase the timeout to account for that.
     ScopedTimeout timeout(*this, seconds(10));
     m_qHostInfo_is_valid = eLazyBoolNo;
     StringExtractorGDBRemote response;
@@ -1199,10 +1199,9 @@ bool GDBRemoteCommunicationClient::GetHostInfo(bool force) {
             if (!value.getAsInteger(0, pointer_byte_size))
               ++num_keys_decoded;
           } else if (name.equals("os_version") ||
-                     name.equals(
-                         "version")) // Older debugserver binaries used the
-                                     // "version" key instead of
-                                     // "os_version"...
+                     name.equals("version")) // Older debugserver binaries used
+                                             // the "version" key instead of
+                                             // "os_version"...
           {
             if (!m_os_version.tryParse(value))
               ++num_keys_decoded;
@@ -2067,7 +2066,7 @@ bool GDBRemoteCommunicationClient::GetCurrentProcessInfo(bool allow_lazy) {
                  !vendor_name.empty()) {
         llvm::Triple triple(llvm::Twine("-") + vendor_name + "-" + os_name);
         if (!environment.empty())
-            triple.setEnvironmentName(environment);
+          triple.setEnvironmentName(environment);
 
         assert(triple.getObjectFormat() != llvm::Triple::UnknownObjectFormat);
         assert(triple.getObjectFormat() != llvm::Triple::Wasm);
@@ -2099,10 +2098,12 @@ bool GDBRemoteCommunicationClient::GetCurrentProcessInfo(bool allow_lazy) {
         }
         m_process_arch.GetTriple().setVendorName(llvm::StringRef(vendor_name));
         m_process_arch.GetTriple().setOSName(llvm::StringRef(os_name));
-        m_process_arch.GetTriple().setEnvironmentName(llvm::StringRef(environment));
+        m_process_arch.GetTriple().setEnvironmentName(
+            llvm::StringRef(environment));
         m_host_arch.GetTriple().setVendorName(llvm::StringRef(vendor_name));
         m_host_arch.GetTriple().setOSName(llvm::StringRef(os_name));
-        m_host_arch.GetTriple().setEnvironmentName(llvm::StringRef(environment));
+        m_host_arch.GetTriple().setEnvironmentName(
+            llvm::StringRef(environment));
       }
       return true;
     }
@@ -2581,7 +2582,7 @@ bool GDBRemoteCommunicationClient::SetCurrentThread(uint64_t tid) {
      * The reply from '?' packet could be as simple as 'S05'. There is no packet
      * which can
      * give us pid and/or tid. Assume pid=tid=1 in such cases.
-    */
+     */
     if (response.IsUnsupportedResponse() && IsConnected()) {
       m_curr_tid = 1;
       return true;
@@ -2617,7 +2618,7 @@ bool GDBRemoteCommunicationClient::SetCurrentThreadForRun(uint64_t tid) {
      * The reply from '?' packet could be as simple as 'S05'. There is no packet
      * which can
      * give us pid and/or tid. Assume pid=tid=1 in such cases.
-    */
+     */
     if (response.IsUnsupportedResponse() && IsConnected()) {
       m_curr_tid_run = 1;
       return true;
@@ -2684,8 +2685,10 @@ bool GDBRemoteCommunicationClient::GetWasmGlobal(uint32_t module_id, int index,
   return false;
 }
 
-bool GDBRemoteCommunicationClient::GetWasmLocal(uint32_t module_id, int frame_index,
-                                                int index, uint64_t &value) {
+bool GDBRemoteCommunicationClient::GetWasmLocal(uint32_t module_id,
+                                                int frame_index, int index,
+                                                uint64_t &value) {
+  // /*
   StreamString packet;
   packet.Printf("qWasmLocal:");
   packet.Printf("%d;%d;%d", module_id, frame_index, index);
@@ -2707,6 +2710,15 @@ bool GDBRemoteCommunicationClient::GetWasmLocal(uint32_t module_id, int frame_in
            buffer_sp->GetByteSize());
     return true;
   }
+  // */
+
+  /*
+  // Mock response
+  if (frame_index == 0 && index == 3) {
+    value = 66528;
+    return true;
+  }
+  */
 
   return false;
 }
@@ -2742,11 +2754,11 @@ bool GDBRemoteCommunicationClient::GetWasmStackValue(uint32_t module_id,
 bool GDBRemoteCommunicationClient::WasmReadMemory(uint32_t module_id,
                                                   lldb::addr_t addr, void *buf,
                                                   size_t size) {
+  // /*
   char packet[64];
-  int packet_len =
-      ::snprintf(packet, sizeof(packet), "qWasmMem:%d;%" PRIx64 ";%" PRIx64,
-                 module_id, static_cast<uint64_t>(addr),
-                 static_cast<uint64_t>(size));
+  int packet_len = ::snprintf(
+      packet, sizeof(packet), "qWasmMem:%d;%" PRIx64 ";%" PRIx64, module_id,
+      static_cast<uint64_t>(addr), static_cast<uint64_t>(size));
   assert(packet_len + 1 < (int)sizeof(packet));
   UNUSED_IF_ASSERT_DISABLED(packet_len);
   StringExtractorGDBRemote response;
@@ -2755,16 +2767,31 @@ bool GDBRemoteCommunicationClient::WasmReadMemory(uint32_t module_id,
     if (response.IsNormalResponse()) {
       return size ==
              response.GetHexBytes(llvm::MutableArrayRef<uint8_t>(
-                                      static_cast<uint8_t*>(buf), size),
+                                      static_cast<uint8_t *>(buf), size),
                                   '\xdd');
     }
   }
+  // */
+
+  /*
+  // Mock response
+  if (addr == 66536) {
+    uint8_t buffer_return[4];
+    buffer_return[0] = 3;
+    buffer_return[1] = 0;
+    buffer_return[2] = 0;
+    buffer_return[3] = 0;
+    memcpy((uint8_t *)(buf), buffer_return, sizeof(uint8_t)*4);
+    return true;
+  }
+  */
   return false;
 }
 
 bool GDBRemoteCommunicationClient::GetWasmCallStack(
     std::vector<lldb::addr_t> &call_stack_pcs) {
   call_stack_pcs.clear();
+  // /*
   StreamString packet;
   packet.Printf("qWasmCallStack");
   StringExtractorGDBRemote response;
@@ -2783,6 +2810,15 @@ bool GDBRemoteCommunicationClient::GetWasmCallStack(
   if (bytes == 0) {
     return false;
   }
+
+  /*
+  // Mock response
+  addr_t buf[1024 / sizeof(addr_t)]; // [21474836615, 21474836706, 21474836770]
+  buf[0] = 21474836615;
+  buf[1] = 21474836706;
+  buf[2] = 21474836770;
+  size_t bytes = 24;
+  */
 
   for (size_t i = 0; i < bytes / sizeof(addr_t); i++) {
     call_stack_pcs.push_back(buf[i]);
@@ -2887,7 +2923,7 @@ size_t GDBRemoteCommunicationClient::GetCurrentThreadIDs(
      * be as simple as 'S05'. There is no packet which can give us pid and/or
      * tid.
      * Assume pid=tid=1 in such cases.
-    */
+     */
     if ((response.IsUnsupportedResponse() || response.IsNormalResponse()) &&
         thread_ids.size() == 0 && IsConnected()) {
       thread_ids.push_back(1);
